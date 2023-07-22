@@ -1,0 +1,22 @@
+#Programa que devuelve si la cadena ingresada es un numero entero, decimal o ninguno de los dos
+def es_numero(cadena):
+    try:
+        int(cadena)
+        return "entero"
+    except ValueError:
+        try:
+            float(cadena)
+            return "decimal"
+        except ValueError:
+            return "ninguno"
+
+if _name_ == "_main_":
+    cadena = input("Ingresa una cadena de caracteres: ")
+
+    resultado = es_numero(cadena)
+    if resultado == "entero":
+        print("La cadena es un número entero.")
+    elif resultado == "decimal":
+        print("La cadena es un número decimal.")
+    else:
+        print("La cadena no es un número entero ni decimal.")
