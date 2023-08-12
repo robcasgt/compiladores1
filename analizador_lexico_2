@@ -1,51 +1,52 @@
-#Programa que  lea un archivo el cual contiene 4.456 * (5 + 6.879 * (8 / 2^3)-7)-1 y
-#muestra una salida con lista de tokens idenficados
+#Programa que  lee un archivo de texto con código y muestra lista de con tokens identificados
 #Realizado por Roberto Castillo y Yellsmy Toj
-import string
+
 import re
 
-def identificar_tokens(archivo):
-    tokens = []
-    token_numeros = r"[-+]?\d*\.\d+|\d+"
-    token_operadores = {'*': 'SIGNO_MULTIPLICACION', '+': 'SIGNO_SUMA', '/': 'SIGO_DIVISION', '-': 'SIGNO_RESTA'}
-    token_signos = {'(': 'PARENTESIS_IZQ', ')': 'PARENTESIS_DERCH', '^': 'ACENTO_CIRCUNFLEJO'}
+def identificar_tokens(codigo):
 
-    signos_key = token_signos.keys()
-    operadores_key = token_operadores.keys()
+    keywords = {'while', 'if', 'return', 'cout', 'cin'}
+    operadores_aritmeticos = {'+', '-', '*', '/', '%'}
+    operadores_logicos = {'&&', '||', '>', '<', '==', '!='}
+    simbolos_especiales = {'(', ')', '[', ']', '{', '}'}
     
-    lineas = archivo.split('\n')
+    tokens_palabras_clave = []
+    tokens_identificadores =[]
+    tokens_operadores = []
+    tokens_operadores_lógicos = []
+    tokens_simbolos_especiales = []
+
+    lineas = codigo.split('\n')
     for linea in lineas:
-        palabras = re.findall(r"[\w.]+|[^\s\w]", linea)
+        palabras = re.findall(r"[\w]+|[^\s\w]", linea)
         for palabra in palabras:
-            match_numero = re.match(token_numeros, palabra)
-            if match_numero:
-                token = match_numero.group(0)
-                if '.' in token:
-                    tokens.append(('NUMERO_DECIMAL', float(token)))
-                else:
-                    tokens.append(('NUMERO_ENTERO', int(token)))
-            elif palabra in operadores_key:
-                tokens.append((token_operadores[palabra], palabra))
-            elif palabra in signos_key:
-                tokens.append((token_signos[palabra], palabra))
-            else:
-                tokens.append(('ERROR. DATO NO VÁLIDO', palabra))
+            if palabra in keywords:
+                tokens_palabras_clave.append(palabra)
+            elif re.match(r"^[a-zA-Z_]\w*$", palabra):
+                tokens_identificadores.append(palabra)
+            elif palabra in operadores_aritmeticos:
+                tokens_operadores.append(palabra)
+            elif palabra in operadores_logicos:
+                tokens_operadores_lógicos.append(palabra)
+            elif palabra in simbolos_especiales:
+                tokens_simbolos_especiales.append(palabra)
     
-    return tokens
+    return tokens_palabras_clave, tokens_identificadores, tokens_operadores, tokens_operadores_lógicos, tokens_simbolos_especiales
 
-if _name_ == "__main__":
-    nombre_archivo = input("Ingresa el nombre del archivo de texto: ")
+if __name__ == "__main__":
+    nombre_archivo = input("Ingresa el nombre del archivo de código: ")
     try:
         with open(nombre_archivo, 'r', encoding='utf-8') as archivo:
-            contenido = archivo.read()
+            entrada = archivo.read()
 
-            tokens = identificar_tokens(contenido)
+            palabras_claves, identificadores, operadores, operadores_logicos, simbolos_especiales  = identificar_tokens(entrada)
 
-            for tipo, valor in tokens:
-                if tipo == 'NUMERO_DECIMAL':
-                    print(f"{tipo:<25} {valor:.3f}")
-                else:
-                    print(f"{tipo:<25} {valor:<15}")
+            print(f"Palabras Clave: {palabras_claves}")
+            print(f"Identificadores: {identificadores}")
+            print(f"Operadores Aritméticos: {operadores}")
+            print(f"Operadores Lógicos: {operadores_logicos}")
+            print(f"Símbolos Especiales: {simbolos_especiales}")
+            
 
     except FileNotFoundError:
         print(f"No se pudo encontrar el archivo '{nombre_archivo}'")
