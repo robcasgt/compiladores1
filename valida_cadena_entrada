@@ -1,0 +1,19 @@
+import re
+
+def es_declaracion_variable(cadena):
+    # Expresión regular para validar declaraciones de variables
+    patron = r'^\s*(int|char|double)\s+[a-zA-Z_]\w*\s*=\s*(?:"[^"]*"|\'[^\']*\'|-?\d+(?:\.\d*)?)\s*;$'
+
+    if re.match(patron, cadena):
+        return True
+    else:
+        return False
+
+# Solicitar la cadena de entrada al usuario
+entrada = input("Ingrese una declaración de variable: ")
+
+# Validar la cadena de entrada
+if es_declaracion_variable(entrada):
+    print("Forma correcta: La declaración de variable es válida.")
+else:
+    print("Forma incorrecta: La declaración de variable no es válida.")
